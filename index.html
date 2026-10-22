@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eli & Aboli | Milestone Log</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c0e;--card:#16161a;--line:#26262d;--txt:#ececf1;--mute:#9a9aa8;--acc:#e9c46a;--acc2:#e63946}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#1d1a26 0%,var(--bg) 60%);color:var(--txt);line-height:1.9;min-height:100vh;overflow-x:hidden}
+main{max-width:880px;margin:0 auto;padding:0 20px 80px}
+section{margin-top:64px;opacity:0;transform:translateY(24px);transition:.8s cubic-bezier(.2,.7,.2,1)}
+section.show{opacity:1;transform:none}
+.hero{text-align:center;padding:110px 0 20px}
+.hero h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;letter-spacing:.5px;direction:ltr;background:linear-gradient(90deg,var(--acc),#fff,var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mute);margin-top:18px;font-weight:300;font-size:1.05rem;max-width:560px;margin-inline:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;transition:.35s}
+.card:hover{transform:translateY(-6px);border-color:#4a4350;box-shadow:0 14px 40px #0008}
+.card .ic{font-size:1.8rem;display:block;margin-bottom:10px}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:6px}
+.card p{color:var(--mute);font-size:.9rem;font-weight:300}
+h2{font-size:1.1rem;font-weight:600;color:var(--acc);margin-bottom:20px}
+.timer{text-align:center}
+.timer .lbl{color:var(--mute);margin-bottom:20px}
+.units{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;direction:ltr}
+.u{min-width:78px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 8px;transition:.6s}
+.u b{display:block;font-size:1.9rem;font-weight:800;font-variant-numeric:tabular-nums}
+.u span{font-size:.75rem;color:var(--mute)}
+.timer.done .u{border-color:var(--acc);box-shadow:0 0 28px #e9c46a55;animation:pulse 2s infinite}
+.timer.done .u:first-child b{color:var(--acc)}
+@keyframes pulse{50%{box-shadow:0 0 46px #e9c46a99}}
+.badge{display:none;margin-top:22px;font-weight:800;font-size:1.3rem;background:linear-gradient(90deg,var(--acc),#f4a261,var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.timer.done .badge{display:block}
+.note{background:linear-gradient(160deg,#1b1a22,#141418);border:1px solid var(--line);border-radius:24px;padding:32px;position:relative}
+.note::before{content:"“";position:absolute;top:-6px;right:22px;font-size:4rem;color:var(--acc);opacity:.5}
+.note p{font-size:1.02rem;font-weight:300;white-space:pre-line}
+.cta{text-align:center}
+button{font-family:inherit;font-size:1.05rem;font-weight:600;color:#111;background:linear-gradient(90deg,var(--acc),#f4a261);border:0;border-radius:999px;padding:16px 38px;cursor:pointer;transition:.3s;box-shadow:0 8px 30px #e9c46a33;margin:6px}
+button:hover{transform:translateY(-3px) scale(1.03)}
+button:active{transform:scale(.97)}
+#replay{display:none;background:transparent;color:var(--acc);border:1px solid var(--acc);box-shadow:none}
+.isdone #replay{display:inline-block}
+#toast{position:fixed;left:50%;bottom:40px;transform:translate(-50%,30px);background:#1e1e24;border:1px solid var(--acc);color:var(--txt);padding:14px 24px;border-radius:16px;opacity:0;pointer-events:none;transition:.5s;z-index:30;max-width:90%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
+footer{text-align:center;color:var(--mute);font-size:.8rem;margin-top:50px;font-weight:300}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:25}
+#flash.go{animation:fl 1.2s ease-out}
+@keyframes fl{0%{opacity:.85}100%{opacity:0}}
+#big{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:.5s;text-align:center;background:radial-gradient(circle,#0c0c0e88,#0c0c0ecc)}
+#big.on{opacity:1}
+#big .n{font-size:clamp(6rem,28vw,16rem);font-weight:800;line-height:1;direction:ltr;background:linear-gradient(180deg,#fff,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px #e9c46a88)}
+#big .t{font-size:clamp(1.2rem,4vw,2rem);font-weight:600;margin-top:10px;opacity:0;transform:translateY(20px);transition:.8s .4s}
+#big.fin .t{opacity:1;transform:none}
+#big.fin .n{animation:pop .9s cubic-bezier(.2,1.6,.3,1)}
+@keyframes pop{0%{transform:scale(.2);opacity:0}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div id="flash"></div>
+<div id="big"><div class="n" id="bn"></div><div class="t" id="bt">۳۰ روز کامل شد! ماهگردمون مبارک 🎉</div></div>
+<main>
+  <header class="hero">
+    <h1>Eli &amp; Aboli | Milestone Log</h1>
+    <p>یه یادگاری کوچیک وسط تمام دغدغه‌ها، امتحان‌ها، بگایی ها و روزهای شلوغمون</p>
+  </header>
+
+  <section>
+    <h2>لحظه‌های مشترک</h2>
+    <div class="grid">
+      <div class="card"><span class="ic">📐</span><h3>الگوهای دامن و پروژه‌های خیاطی</h3><p>صدها ساعت تلاش و دقت</p></div>
+      <div class="card"><span class="ic">⏰</span><h3>برنامه‌ی شلوغ روزانه</h3><p>از زنگ اول‌های صبح تا کارگاه‌های طولانی</p></div>
+      <div class="card"><span class="ic">🥀</span><h3>گل لیلیوم</h3><p>یادآوری یک هوسِ قشنگ و خاص!</p></div>
+      <div class="card"><span class="ic">💻</span><h3>پروژه‌های کدنویسی و فوتوشاپ</h3><p>تلاش برای پیشرفت و هدف‌ها</p></div>
+    </div>
+  </section>
+
+  <section class="timer" id="timer">
+    <h2>روزشمار</h2>
+    <p class="lbl">مدت‌زمانی که خیلی یهویی باهم اشنا شدیم</p>
+    <div class="units">
+      <div class="u"><b id="d">0</b><span>روز</span></div>
+      <div class="u"><b id="h">0</b><span>ساعت</span></div>
+      <div class="u"><b id="m">0</b><span>دقیقه</span></div>
+      <div class="u"><b id="s">0</b><span>ثانیه</span></div>
+    </div>
+    <div class="badge">🎆 ۳۰ روز کامل! 🎆</div>
+  </section>
+
+  <section>
+    <h2>یادداشت ویژه</h2>
+    <div class="note"><p>خسته نباشی الی کوشولو می‌دونم این روزا چقدر سرت با امتحانای ریاضی، جغرافیا و کارهای کارگاه شلوغه و چقدر داری تلاش می‌کنی
+ منم این‌ طرف درگیر برنامه‌ نویسی و کارهای خودم هستم خواستم بگم توی این روزهای پرمشغله بودنت و صمیمیتت خیلی باارزشه ماهگردمون مبارک🎉</p></div>
+  </section>
+
+  <section class="cta" id="cta">
+    <button id="btn">برای دریافت انرژی کلیک کن ✨</button>
+    <button id="replay">دوباره فشفشه 🎆</button>
+    <footer>Eli &amp; Aboli</footer>
+  </section>
+</main>
+<div id="toast">امیدوارم امروز برات پر از حس خوب و استراحت باشه!</div>
+
+<script>
+// لحظه‌ی کامل شدن ۳۰ روز: امروز ساعت ۲۲:۱۸ به وقت تهران
+const TARGET = new Date("2026-10-22T22:18:00+03:30").getTime();
+const START  = TARGET - 30*86400000; // یعنی شمارش از ۲۹ روز و چند ساعت شروع میشه و به ۳۰ روز میرسه
+
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,"0");
+let fired = false;
+
+function tick(){
+  const now = Date.now();
+  const s = Math.floor(Math.max(0, now - START)/1000);
+  $("d").textContent = Math.floor(s/86400);
+  $("h").textContent = pad(Math.floor(s%86400/3600));
+  $("m").textContent = pad(Math.floor(s%3600/60));
+  $("s").textContent = pad(s%60);
+  const left = TARGET - now;
+  if(left > 0 && left <= 10000){            // شمارش معکوس ۱۰ ثانیه آخر
+    const big = $("bn"); big.textContent = Math.ceil(left/1000);
+    $("big").classList.add("on"); $("big").classList.remove("fin");
+    if(Math.random() < .5) rocket();         // کم‌کم گرم میشه
+  }
+  if(left <= 0 && !fired){ fired = true; celebrate(left < -15000); }
+}
+setInterval(tick,250); tick();
+
+function markDone(){ $("timer").classList.add("done"); document.body.classList.add("isdone"); }
+
+function celebrate(late){
+  markDone();
+  $("bn").textContent = "30";
+  $("big").classList.add("on","fin");
+  $("flash").classList.remove("go"); void $("flash").offsetWidth; $("flash").classList.add("go");
+  show(late ? 9000 : 22000);
+  setTimeout(()=>$("big").classList.remove("on","fin"), late ? 6000 : 9000);
+}
+$("replay").onclick = ()=>{ $("bn").textContent="30"; $("big").classList.add("on","fin"); show(12000);
+  setTimeout(()=>$("big").classList.remove("on","fin"),5000); };
+
+/* ---------- Scroll reveal ---------- */
+const io = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("show");io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll("section").forEach(s=>io.observe(s));
+
+/* ---------- Particle engine: fireworks + confetti ---------- */
+const cv = $("fx"), ctx = cv.getContext("2d");
+let P = [], R = [], running = false, showTimer = null;
+function size(){cv.width = innerWidth; cv.height = innerHeight}
+size(); addEventListener("resize",size);
+const pal = ["#e9c46a","#e63946","#f4a261","#ffffff","#2a9d8f","#ff6bd6","#6bd0ff","#b5ff6b"];
+const rnd = (a,b)=>a+Math.random()*(b-a);
+
+function rocket(){
+  R.push({x:rnd(cv.width*.15,cv.width*.85), y:cv.height, ty:rnd(cv.height*.15,cv.height*.5), vy:-rnd(11,16), c:pal[Math.floor(Math.random()*pal.length)]});
+  go();
+}
+function explode(x,y,c){
+  const n = 90, multi = Math.random()<.35, c2 = pal[Math.floor(Math.random()*pal.length)];
+  const ring = Math.random()<.4;
+  for(let i=0;i<n;i++){
+    const a = Math.PI*2*i/n, sp = ring ? 5.5 : rnd(1.5,7);
+    P.push({k:"s",x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,c:(multi&&i%2)?c2:c,l:0,max:rnd(55,90),r:rnd(1.5,2.8)});
+  }
+}
+function confetti(n){
+  for(let i=0;i<n;i++) P.push({k:"c",x:rnd(0,cv.width),y:-20,vx:rnd(-2,2),vy:rnd(2,6),w:rnd(6,12),h:rnd(4,8),a:rnd(0,6),va:rnd(-.2,.2),c:pal[Math.floor(Math.random()*pal.length)],l:0,max:200});
+  go();
+}
+function burstConfetti(){
+  for(let i=0;i<150;i++) P.push({k:"c",x:cv.width/2,y:cv.height*.7,vx:rnd(-8,8),vy:-rnd(4,17),w:rnd(6,12),h:rnd(4,8),a:rnd(0,6),va:rnd(-.3,.3),c:pal[Math.floor(Math.random()*pal.length)],l:0,max:130});
+  go();
+}
+function show(ms){
+  clearInterval(showTimer);
+  const end = Date.now()+ms;
+  for(let i=0;i<6;i++) setTimeout(rocket,i*180);
+  confetti(120);
+  showTimer = setInterval(()=>{
+    if(Date.now()>end){clearInterval(showTimer);return}
+    const k = 1+Math.floor(Math.random()*3);
+    for(let i=0;i<k;i++) setTimeout(rocket,i*150);
+    if(Math.random()<.25) confetti(30);
+  },600);
+}
+function go(){ if(!running){running = true; requestAnimationFrame(loop)} }
+function loop(){
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.fillStyle = "rgba(0,0,0,.22)"; ctx.fillRect(0,0,cv.width,cv.height);   // دنباله‌ی نورانی
+  ctx.globalCompositeOperation = "lighter";
+  R = R.filter(r=>{
+    r.y += r.vy; r.vy += .12;
+    ctx.fillStyle = r.c; ctx.beginPath(); ctx.arc(r.x,r.y,2.4,0,7); ctx.fill();
+    if(r.vy >= -1.5 || r.y <= r.ty){ explode(r.x,r.y,r.c); return false }
+    return true;
+  });
+  P = P.filter(p=>{
+    p.l++;
+    if(p.k==="s"){
+      p.vx *= .97; p.vy = p.vy*.97 + .06; p.x += p.vx; p.y += p.vy;
+      ctx.globalAlpha = Math.max(0,1-p.l/p.max); ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fill();
+    }else{
+      p.vy += .18; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      ctx.globalAlpha = Math.max(0,1-p.l/p.max);
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    return p.l < p.max && p.y < cv.height+40;
+  });
+  if(P.length || R.length) requestAnimationFrame(loop);
+  else {running = false; ctx.globalCompositeOperation="source-over"; ctx.clearRect(0,0,cv.width,cv.height)}
+}
+
+/* ---------- Energy button ---------- */
+const toast = $("toast"); let tt;
+$("btn").addEventListener("click",()=>{
+  burstConfetti(); rocket();
+  toast.classList.add("on");
+  clearTimeout(tt); tt = setTimeout(()=>toast.classList.remove("on"),4000);
+});
+</script>
+</body>
+</html>
